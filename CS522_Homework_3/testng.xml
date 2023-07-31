@@ -1,0 +1,21 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <test verbose="2" preserve-order="true" name="Amazon Test">
+        <classes>
+            <class name="TestAmazonMultipleSearch">
+                <parameter name="item1" value="JBL Speakers"/>
+                <parameter name="price1a" value="$59.88"/>
+                <parameter name="price1b" value="$119.99"/>
+                <parameter name="price1c" value="$159.99"/>
+                <parameter name="item2" value="cell phones"/>
+                <parameter name="price2a" value="$323.00"/>
+                <parameter name="price2b" value="$244.00"/>
+                <parameter name="price2c" value="$69.78"/>
+                <parameter name="item3" value="womens shoes"/>
+                <parameter name="price3a" value="$71.97"/>
+                <parameter name="price3b" value="$29.99"/>
+                <parameter name="price3c" value="$89.96"/>
+            </class>
+        </classes>
+    </test>
+</suite>
