@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 
-public class TestRunner {
+public class TestAmazon {
     WebDriver driver;
     String myWebBrowserDriver = "web-driver.chrome.driver";
     String myWebBrowserDriverPath = "C:\\Drivers\\Selenium\\chrome\\chromedriver.exe";
@@ -96,7 +96,7 @@ public class TestRunner {
     }
 
     public static void main(String[] args) throws Exception {
-        TestRunner obj = new TestRunner();
+        TestAmazon obj = new TestAmazon();
 
         obj.launchBrowserGoToAmazon();
         obj.maximizeWindowSize();

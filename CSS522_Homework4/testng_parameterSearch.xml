@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="CS522 Week11 - Parameterize Search">
+
+    <test name="parameterTest1">
+        <parameter name="item" value="JBL Speakers"></parameter>
+        <parameter name="price" value="$119.99"></parameter>
+        <classes>
+            <class name="TestEbayParameterSearch"></class>
+        </classes>
+    </test>
+
+    <test name="parameterTest2">
+        <parameter name="item" value="cell phones"></parameter>
+        <parameter name="price" value="$69.04"></parameter>
+        <classes>
+            <class name="TestEbayParameterSearch"></class>
+        </classes>
+    </test>
+
+    <test name="parameterTest3">
+        <parameter name="item" value="womens shoes"></parameter>
+        <parameter name="price" value="$71.97"></parameter>
+        <classes>
+            <class name="TestEbayParameterSearch"></class>
+        </classes>
+    </test>
+
+</suite>

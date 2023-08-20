@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite guice-stage="DEVELOPMENT" name="Failed suite [CS522 Week11 - Parameterize Search]">
+  <test thread-count="5" name="parameterTest2(failed)">
+    <parameter name="item" value="cell phones"/>
+    <parameter name="price" value="$69.04"/>
+    <classes>
+      <class name="TestEbayParameterSearch">
+        <methods>
+          <include name="searchItem" invocation-numbers="0"/>
+          <include name="tearDown"/>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- TestEbayParameterSearch -->
+    </classes>
+  </test> <!-- parameterTest2(failed) -->
+  <test thread-count="5" name="parameterTest3(failed)">
+    <parameter name="item" value="womens shoes"/>
+    <parameter name="price" value="$71.97"/>
+    <classes>
+      <class name="TestEbayParameterSearch">
+        <methods>
+          <include name="searchItem" invocation-numbers="0"/>
+          <include name="tearDown"/>
+          <include name="setup"/>
+        </methods>
+      </class> <!-- TestEbayParameterSearch -->
+    </classes>
+  </test> <!-- parameterTest3(failed) -->
+</suite> <!-- Failed suite [CS522 Week11 - Parameterize Search] -->

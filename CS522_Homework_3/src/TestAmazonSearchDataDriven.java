@@ -6,6 +6,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -14,101 +16,106 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 
 public class TestAmazonSearchDataDriven {
-    private WebDriver driver;
-    private Actions actions;
-    private WebDriverWait wait;
-    private final static Logger LOGGER = Logger.getLogger(TestAmazonSearchDataDriven.class.getName());
-    private static final String CHROME_DRIVER_PATH = "C:\\Drivers\\Selenuim\\chromedriver.exe";
-    private static final String AMAZON_URL = "https://www.amazon.com";
-    private static final String CATEGORY = "Appliances";
-    private static final String PRODUCT = "Oven";
-    private static final String BEST_SELLERS_LINK = "Best Sellers";
-    private static final String EBAY_URL = "https://www.ebay.com";
+    WebDriver driver;
+    Actions actions;
+    String driverPath = "C:\\Drivers\\Selenuim\\chromedriver.exe";
+    static String amazonUrl = "https://www.amazon.com";
+    static String bestsellers = "Best Sellers";
+    static String ebay = "https://www.ebay.com";
 
-    public TestAmazonSearchDataDriven() {
-        LOGGER.info("Initializing browser.");
-        System.setProperty("webdriver.chrome.driver", CHROME_DRIVER_PATH);
+    void launchBrowserGoToAmazon(String url) {
+        System.setProperty("webdriver.chrome.driver", driverPath);
         driver = new ChromeDriver();
         actions = new Actions(driver);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        driver.get(url);
     }
 
-    public void launchBrowserGoToAmazon() {
-        LOGGER.info("Navigating to Amazon.");
-        driver.get(AMAZON_URL);
+    void maximizeWindowSize() {
         driver.manage().window().maximize();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("body")));
     }
 
-    public void selectCategory(String category) {
-        LOGGER.info("Selecting category: " + category);
+    void selectCategory(String category) {
         WebElement categoryDropdown = driver.findElement(By.id("searchDropdownBox"));
         categoryDropdown.sendKeys(category);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("nav-search-submit-button"))).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.attributeContains(categoryDropdown, "value", category));
+        captureScreenshot("CategorySelected");
     }
 
-    public void searchProduct(String product) {
-        LOGGER.info("Searching for product: " + product);
+    void searchProduct(String product) {
         WebElement searchBox = driver.findElement(By.id("twotabsearchtextbox"));
         searchBox.sendKeys(product);
         searchBox.submit();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.titleContains(product));
+        captureScreenshot("ProductSearched");
     }
 
-    public void openLinkBestSellers() {
-        LOGGER.info("Opening Best Sellers link.");
-        wait.until(ExpectedConditions.elementToBeClickable(By.linkText(BEST_SELLERS_LINK))).click();
+    void openLinkBestSellers(String bestsellers) {
+        driver.findElement(By.linkText(bestsellers)).click();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.urlContains("bestsellers"));
+        captureScreenshot("BestSellersOpened");
     }
 
-    public void navigateToEbayGoBack() {
-        LOGGER.info("Navigating to eBay.");
-        driver.navigate().to(EBAY_URL);
-        LOGGER.info("Navigating back to Amazon.");
+    void navigateToEbayGoBack(String ebay) {
+        driver.navigate().to(ebay);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.urlContains("ebay"));
         driver.navigate().back();
+        wait.until(ExpectedConditions.urlContains("amazon"));
+        captureScreenshot("NavigatedToEbayAndBack");
     }
 
-    public void closeExit() {
-        LOGGER.info("Closing browser.");
+    void closeExit() {
         driver.quit();
     }
 
-    public void takeScreenshot(String screenshotName) throws IOException {
-        TakesScreenshot scrShot = ((TakesScreenshot) driver);
-        File SrcFile = scrShot.getScreenshotAs(OutputType.FILE);
-        String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        File DestFile = new File("./screenshots/" + screenshotName + "_" + timestamp + ".png");
-        FileUtils.copyFile(SrcFile, DestFile);
-    }
-
-    public void useExcelData(String excelPath) throws Exception {
-        FileInputStream fis = new FileInputStream(excelPath);
-        Workbook workbook = new XSSFWorkbook(fis);
-        Sheet sheet = workbook.getSheetAt(0);
-        Iterator<Row> rowIterator = sheet.rowIterator();
-        while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
-            Cell categoryCell = row.getCell(0);
-            Cell productCell = row.getCell(1);
-            if (categoryCell == null || productCell == null) break;
-            String mySearchCategory = categoryCell.getStringCellValue();
-            String mySearchItem = productCell.getStringCellValue();
-            selectCategory(mySearchCategory);
-            searchProduct(mySearchItem);
-            takeScreenshot("search_" + mySearchCategory + "_" + mySearchItem);
+    void captureScreenshot(String screenshotName) {
+        try {
+            File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String screenshotFileName = screenshotName + "_" + timestamp + ".png";
+            File destinationFile = new File(screenshotFileName);
+            FileUtils.copyFile(screenshotFile, destinationFile);
+            System.out.println("Screenshot saved as: " + destinationFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        workbook.close();
-        fis.close();
     }
 
     public static void main(String[] args) {
         TestAmazonSearchDataDriven obj = new TestAmazonSearchDataDriven();
+        obj.launchBrowserGoToAmazon(amazonUrl);
+        obj.maximizeWindowSize();
+
+        // Read data from Excel and perform actions
         try {
-            obj.launchBrowserGoToAmazon();
-            obj.useExcelData("D:\\gu\\SFBU\\CS522\\week12\\product.xlsx");
-            obj.openLinkBestSellers();
-            obj.navigateToEbayGoBack();
+            FileInputStream fis = new FileInputStream("D:\\gu\\SFBU\\CS522\\week12\\product.xlsx");
+            Workbook workbook = new XSSFWorkbook(fis);
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                String category = row.getCell(0).getStringCellValue();
+                String product = row.getCell(1).getStringCellValue();
+
+                obj.selectCategory(category);
+                obj.searchProduct(product);
+                obj.openLinkBestSellers(bestsellers);
+                obj.navigateToEbayGoBack(ebay);
+            }
+
+            workbook.close();
+            fis.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            obj.closeExit();
         }
+
+        obj.closeExit();
     }
+
 }

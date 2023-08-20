@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <test verbose="2" preserve-order="true" name="Amazon Test">
+        <classes>
+            <class name="TestAmazon">
+                <methods>
+                    <include name="launchBrowserGoToAmazon"/>
+                    <include name="maximizeWindowSize"/>
+                    <include name="selectCategory"/>
+                    <include name="searchProduct"/>
+                    <include name="openLinkBestSellers"/>
+                    <include name="navigateToEbayGoBack"/>
+                    <include name="closeExit"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
